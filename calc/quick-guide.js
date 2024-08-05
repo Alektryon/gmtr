@@ -227,7 +227,7 @@ function displayContactInfo() {
 	
 	o += '<hr class="numPropSeparator">'
 	
-	o += '<div style="margin-top: 1em;margin-bottom: 1.25em;">Send your feedback to <a class="qgLink" href="mailto:mmiikh96@gmail.com">mmiikh96@gmail.com</a><br>(Original author of this software)<br><br>Send any suggestion to <a class="qgLink" href="mailto:qwirinus@proton.me">qwirinus@proton.me</a><br>(Creator of this version of Gematro)</div>'
+	o += '<div style="margin-top: 1em;margin-bottom: 1.25em;">Send your feedback to <a class="qgLink" href="mailto:mmiikh96@gmail.com">mmiikh96@gmail.com</a><br>(Original author of this software)<br><br>Send any suggestion to <a class="qgLink" href="mailto:qwirinus@proton.me">qwirinus@proton.me</a><br>(Owner of this ʹforkʹ of Gematro)</div>'
 	
 	o += '<hr class="numPropSeparator">'
 
