@@ -81,6 +81,8 @@ function importFileAction(file) {
 	
 		// detect cipher.js, load user ciphers
 		if (uCiph[0] == "// ciphers.js") {
+			optShowExtraCiphers = false // clear "Show Extra Ciphers" option
+			document.getElementById('chkbox_SEC').checked = false
 
 			if (precalcDBLoaded) { // return if precalculated database is loaded
 				displayCalcNotification("Cipher import is disabled for CSV Databases!", 3000)
@@ -172,6 +174,10 @@ function importFileAction(file) {
 			$("#liveDBOption").addClass("hideValue") // hide "Live Database Mode"
 			closeAllOpenedMenus() // close "Edit Ciphers"
 			precalcDBLoaded = true // precalculated database loaded, disable cipher rearrangement
+
+			optShowExtraCiphers = false // disable and hide "Show Extra Ciphers" option
+			document.getElementById('chkbox_SEC').checked = false
+			$('#showExtraCiphOption').addClass('hideValue')
 
 			console.log("CSV Database loaded! ("+userDB.length+" entries)")
 			displayCalcNotification("CSV Database loaded!", 1500)

@@ -13,7 +13,7 @@ var cCat = []; // list of all available cipher categories
 var colorMenuColumns = ($(window).width() < 1600) ? 2 : 4 // number of columns inside Color Menu
 var encodingMenuColumns = 4 // number of columns inside Encoding menu
 var enabledCiphColumns = 4 // number of columns for enabled ciphers table (for phrase)
-var optForceTwoColumnLayout = false // force 2 cipher columns
+var optForceTwoColumnLayout = true // force 2 cipher columns
 var optColoredCiphers = true // use colored ciphers
 
 var colorControlsMenuOpened = false // color controls menu state
@@ -22,6 +22,7 @@ var dateCalcMenuOpened = false // date calculator menu state
 var encodingMenuOpened = false // encoding menu state
 
 var enabledCiphCount = 0 // number of enabled ciphers
+var optShowExtraCiphers = false // enable extra ciphers
 
 // Cipher colors
 var origColors = [] // preserve original cipher colors
@@ -62,6 +63,7 @@ var dbPageItems = 15 // number of phrases in one section
 var dbScrollItems = 1 // used for scrolling
 
 var optGradientCharts = true // gradient fill for breakdown/cipher charts
+var optGradientChartsDefault = optGradientCharts
 
 var interfaceHue = 222 // calculator interface color
 var interfaceHueDefault = 222 // value for reset, updated on first run of updateInterfaceHue()
@@ -84,7 +86,7 @@ var coderainSatDefault = 0.2
 var coderainLit = 0.2 // coderain lightness
 var coderainLitDefault = 0.2
 
-var optImageScale = 2.0 // image scaling factor for screenshots
+var optImageScale = 1.0 // image scaling factor for screenshots
 
 var calcOptionsArr = [ // used to export/import settings
 	"'optNumCalcMethod'+' = '+optNumCalcMethod",
@@ -92,6 +94,7 @@ var calcOptionsArr = [ // used to export/import settings
 	"'optFiltSameCipherMatch'+' = '+optFiltSameCipherMatch",
 	"'optShowOnlyMatching'+' = '+optShowOnlyMatching",
 	"'optNewPhrasesGoFirst'+' = '+optNewPhrasesGoFirst",
+	"'optShowExtraCiphers'+' = '+optShowExtraCiphers",
 	"'optAllowPhraseComments'+' = '+optAllowPhraseComments",
 	"'liveDatabaseMode'+' = '+liveDatabaseMode",
 	"'optLetterWordCount'+' = '+optLetterWordCount",
@@ -299,13 +302,19 @@ function createAboutMenu() { // create menu with all cipher catergories
 	o += '<button class="dropbtn">About</button>'
 	o += '<div class="dropdown-content dropdown-about">'
 
-	o += '<center><div class="gematroLogo">'+gematroSvgLogo()+'</div></center>'
+	o += '<center><div class="gematroLogo">'+gematroSvgLogo()+'</div>'
+	o += '</center>'
+	// o += '<div style="margin: 0.5em;"></div>'
 	o += '<div style="margin: 1em;"></div>'
-	o += '<div style="position: relative;"><div class="gitLogo">'+gitSvgLogo()+'</div><a class="intBtnRepo" target="_blank" href="https://github.com/gematro/gematro.github.io">GitHub</a></div>'
-	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input class="intBtn" type="button" value="Quickstart Guide" onclick="displayQuickstartGuide()">'
 	o += '<div style="margin: 0.5em;"></div>'
-	o += '<input class="intBtn" type="button" value="FAQ" onclick="displayFaq()">'
+	o += '<input class="intBtn" type="button" value="Ciphers (Info)" onclick="displayCipherInfo()">'
+	o += '<div style="margin: 0.5em;"></div>'
+	o += '<div style="position: relative;"><div class="gitLogo">'+gitSvgLogo()+'</div><a class="intBtnRepo" target="_blank" href="https://github.com/Alektryon/gematro">GitHub</a></div>'
+	o += '<div style="margin: 0.5em;"></div>'
+	o += '<input class="intBtn" type="button" value="Databases (Mega)" onclick="gotoMega()">'
+	o += '<div style="margin: 0.5em;"></div>'
+	o += '<input class="intBtn" type="button" value="Gematria Blog" onclick="gotoBlogger()">'
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input class="intBtn" type="button" value="Contacts" onclick="displayContactInfo()">'
 
@@ -314,9 +323,16 @@ function createAboutMenu() { // create menu with all cipher catergories
 	document.getElementById("calcOptionsPanel").innerHTML = o
 }
 
+function gotoGitHubRepo() { window.open("https://github.com/Alektryon/gematro/", "_blank") }
+
+function gotoMega() { window.open("https://mega.nz/folder/xggFAICR#9o8V2dCM3rEVjh7eDx0JDQ", "_blank") }
+
+function gotoBlogger() { window.open("https://gematriaresearch.blogspot.com/", "_blank") }
+
 function gematroSvgLogo() {
-	return '<svg xmlns="http://www.w3.org/2000/svg" width="802.4" height="76.4" viewBox="0 0 2006 191"><defs><style>.cls-1 {fill: #bababa;fill-rule: evenodd;}</style></defs><path id="gematro_svg" data-name="gematroSVG" class="cls-1" d="m 50.512694,0.29785155 c -19.379981,0 -32.484863,3.15932895 -39.311522,9.47265605 C 4.3745118,16.083835 0.9625807,27.902842 0.96191404,45.229491 V 145.87402 c 0,17.47332 3.41259776,29.36317 10.23925796,35.67383 6.826659,6.31066 19.931541,9.46999 39.311522,9.47265 H 188.58886 c 19.37998,0 32.48487,-3.15933 39.31152,-9.47265 6.82666,-6.31333 10.2386,-18.20318 10.23926,-35.67383 V 80.024412 H 116.80175 v 33.916018 h 75.75684 v 40.52246 H 47.426757 V 35.322265 H 192.55371 V 55.80078 l 45.44433,0.200195 0.14649,-12.973632 c 0,-16.148651 -3.45091,-27.304352 -10.35157,-33.4716792 C 220.8923,3.3883367 207.82639,0.29985155 188.59375,0.29785155 Z m 267.128896,0 V 191.0205 h 207.01172 l 0.005,-0.005 V 155.34179 H 364.55565 v -46.90918 h 91.83106 V 75.620115 H 364.55077 V 33.999023 H 522.23143 V 0.29785155 Z m 274.17968,0 V 191.0205 h 37.22168 v -0.005 -128.168942 l 86.32813,105.268552 h 9.02832 L 809.624,59.765623 V 191.0205 h 43.16406 V 0.29785155 H 815.35154 L 722.41697,113.50097 629.04295,0.29785155 Z m 430.09763,0 L 908.72556,191.0205 h 46.46973 v -0.005 l 23.99902,-41.84082 h 126.19629 l 23.999,41.84082 h 52.1924 L 1066.6308,0.29785155 Z m 157.6807,0 V 34.438476 h 92.0605 V 191.0205 h 46.46 V 34.438476 h 92.2803 V 0.29785155 Z m 290.9228,0 V 191.0205 h 45.8057 v -72.23632 h 43.8232 l 79.9365,72.23632 h 66.7334 l -90.7324,-72.23632 h 26.2012 c 15.71,0 27.0906,-2.86354 34.1406,-8.58887 7.05,-5.72533 10.5746,-15.048096 10.5713,-27.96875 V 37.299804 c 0,-13.066654 -3.5246,-22.500787 -10.5713,-28.3007808 C 1669.384,3.199029 1658.0033,0.29785155 1642.29,0.29785155 Z m 338.0371,0 c -19.52,0 -32.6589,3.15932895 -39.4189,9.47265605 -6.76,6.3133274 -10.1385,18.1323344 -10.1319,35.4589834 V 145.87402 c 0,17.47332 3.3786,29.36317 10.1319,35.67383 6.7533,6.31066 19.8923,9.4651 39.4189,9.46777 h 147.5488 c 19.38,0 32.4849,-3.15445 39.3116,-9.46777 6.8266,-6.31333 10.2392,-18.20318 10.2392,-35.67383 V 45.229491 c 0,-17.321983 -3.3395,-29.138774 -10.0195,-35.4541006 -6.68,-6.315327 -19.8579,-9.47687218 -39.5313,-9.47753885 z M 1516.3281,33.120116 h 106.1426 c 8.08,0 13.6242,1.171177 16.6308,3.520508 3.01,2.349998 4.5133,6.311654 4.5166,11.889648 v 22.026367 c 0,5.581328 -1.5032,9.542984 -4.5166,11.889648 -3.0133,2.346664 -8.5575,3.522724 -16.6308,3.525391 h -106.1426 z m -474.3701,1.757813 44.4922,79.501951 h -87.43167 z m 763.5205,0.439453 h 153.7207 V 154.46289 H 1805.4785 V 35.322265 Z m 61.4355,34.843749 c -7.3809,0 -13.3203,5.103237 -13.3203,11.445312 v 26.777347 c 0,6.34207 5.9394,11.45019 13.3203,11.45019 h 31.1621 c 7.3809,0 13.3252,-5.10812 13.3252,-11.45019 V 81.606443 c 0,-6.342075 -5.9443,-11.445312 -13.3252,-11.445312 z"/></svg>'
+	return '<svg xmlns="http://www.w3.org/2000/svg" width="802.4" height="76.4" viewBox="0 0 2006 191"><defs><style>.cls-1 {fill: #bababa;fill-rule: evenodd;}</style></defs><path id="gematro_svg" data-name="gematroSVG" class="cls-1" d="M192.556,55.8L238,56l0.143-12.972q0-24.223-10.351-33.474T188.592,0.3H50.512q-29.07,0-39.31,9.47T0.961,45.23V145.873q0,26.21,10.24,35.676t39.31,9.47h138.08q29.07,0,39.31-9.47t10.241-35.676V80.026H116.8V113.94h75.757v40.522H47.429V35.32H192.556V55.8Zm332.1,135.218V155.343h-160.1V108.435h91.833V75.621H364.552V34h157.68V0.3H317.644V191.019H524.655Zm104.386,0V62.848l86.328,105.268h9.03L809.625,59.765V191.019h43.164V0.3H815.351L722.417,113.5,629.041,0.3H591.823V191.019h37.218Zm326.153,0,24-41.843H1105.39l24,41.843h52.19L1066.63,0.3h-44.71L908.726,191.019h46.468ZM1041.96,34.88l44.49,79.5H999.018Zm368.44-.44V0.3H1179.6V34.439h92.06v156.58h46.46V34.439h92.28Zm228.7,2.2q4.515,3.525,4.52,11.892V70.556q0,8.372-4.52,11.892t-16.63,3.524H1516.33V33.118h106.14Q1634.59,33.118,1639.1,36.642ZM1516.33,191.019V118.785h43.82l79.94,72.234h66.73l-90.73-72.234h26.2q23.565,0,34.14-8.588T1687,82.228V37.3q0-19.6-10.57-28.3t-34.14-8.7H1470.52V191.019h45.81Zm289.15-155.7H1959.2V154.462H1805.48V35.32Zm-46.47,110.553q0,26.21,10.13,35.676t39.42,9.47h147.55q29.07,0,39.31-9.47t10.24-35.676V45.23q0-25.983-10.02-35.456T1956.11,0.3H1808.56q-29.28,0-39.42,9.47T1759.01,45.23V145.873Z"/></svg>'
 }
+
 function gitSvgLogo(){
 	return '<svg height="20" width="20" viewBox="0 0 24 24" version="1.1" ><path d="M12.5.75C6.146.75 1 5.896 1 12.25c0 5.089 3.292 9.387 7.863 10.91.575.101.79-.244.79-.546 0-.273-.014-1.178-.014-2.142-2.889.532-3.636-.704-3.866-1.35-.13-.331-.69-1.352-1.18-1.625-.402-.216-.977-.748-.014-.762.906-.014 1.553.834 1.769 1.179 1.035 1.74 2.688 1.25 3.349.948.1-.747.402-1.25.733-1.538-2.559-.287-5.232-1.279-5.232-5.678 0-1.25.445-2.285 1.178-3.09-.115-.288-.517-1.467.115-3.048 0 0 .963-.302 3.163 1.179.92-.259 1.897-.388 2.875-.388.977 0 1.955.13 2.875.388 2.2-1.495 3.162-1.179 3.162-1.179.633 1.581.23 2.76.115 3.048.733.805 1.179 1.825 1.179 3.09 0 4.413-2.688 5.39-5.247 5.678.417.36.776 1.05.776 2.128 0 1.538-.014 2.774-.014 3.162 0 .302.216.662.79.547C20.709 21.637 24 17.324 24 12.25 24 5.896 18.854.75 12.5.75Z"></path></svg>'
 }
@@ -337,11 +353,13 @@ function createOptionsMenu() {
 	var CCMstate = ""; var SCMstate = ""; var SOMstate = ""; var DLIstate = "";
 	var APCstate = ""; var LDMstate = ""; var NPGFstate = ""; var LWCstate = "";
 	var WBstate = ""; var CBstate = ""; var CCstate = ""; var GCstate = "";
-	var SWCstate = ""; var MCRstate = "";
+	var SWCstate = ""; var MCRstate = ""; var SECstate = "";
 
 	if (optFiltCrossCipherMatch) CCMstate = "checked" // Cross Cipher Match
 	if (optFiltSameCipherMatch) SCMstate = "checked" // Same Cipher Match
 	if (optShowOnlyMatching) SOMstate = "checked" // Show Only Matching
+
+	if (optShowExtraCiphers) SECstate = "checked" // Show Extra Ciphers
 
 	if (optDotlessLatinI) DLIstate = "checked" // Dotless Latin 'ı' as 'i'
 	if (optAllowPhraseComments) APCstate = "checked" // Allow Phrase Comments
@@ -364,6 +382,8 @@ function createOptionsMenu() {
 	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Cross Cipher Match<input type="checkbox" id="chkbox_CCM" onclick="conf_CCM()" '+CCMstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Same Cipher Match<input type="checkbox" id="chkbox_SCM" onclick="conf_SCM()" '+SCMstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Show Only Matching<input type="checkbox" id="chkbox_SOM" onclick="conf_SOM()" '+SOMstate+'><span class="custChkBox"></span></label></div>'
+	o += '<div style="margin: 1em"></div>'
+	o += '<div class="optionElement" id="showExtraCiphOption"><label class="chkLabel ciphCheckboxLabel2">Show Extra Ciphers<input type="checkbox" id="chkbox_SEC" onclick="conf_SEC()" '+SECstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div style="margin: 1em"></div>'
 	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Dotless Latin <b>ı</b> as <b>i</b><input type="checkbox" id="chkbox_DLI" onclick="conf_DLI()" '+DLIstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Ignore Comments [...]<input type="checkbox" id="chkbox_APC" onclick="conf_APC()" '+APCstate+'><span class="custChkBox"></span></label></div>'
@@ -390,6 +410,22 @@ function createOptionsMenu() {
 	o += '</div></div>'
 
 	document.getElementById("calcOptionsPanel").innerHTML = o
+}
+
+function conf_SEC() { // Show Extra Ciphers
+	optShowExtraCiphers = !optShowExtraCiphers
+	if (optShowExtraCiphers) {
+		if (cCat.indexOf("Extra") == -1) cCat.push("Extra") // add Extra category
+	} else {
+		if (cCat.indexOf("Extra") !== -1) cCat.splice(cCat.indexOf("Extra"),1) // remove Extra category
+	}
+	document.getElementById("calcOptionsPanel").innerHTML = "" // redraw menu
+	createCalcMenus()
+	if (userDBlive.length !== 0) { // restore controls if live database is loaded
+		$("#clearDBqueryBtn").removeClass("hideValue") // clear button
+		$("#unloadDBBtn").removeClass("hideValue") // unload database button
+		$("#btn-export-db-query").removeClass("hideValue") // export button
+	}
 }
 
 function conf_CCM() { // Cross Cipher Match
@@ -1043,8 +1079,10 @@ function initCiphers(updDefCiph = true) { // list categories, define default (ba
 	cCat = [] // clear categories
 	for (i = 0; i < cipherList.length; i++) {
 		c = cipherList[i].cipherCategory
-		if (cCat.indexOf(c) == -1) { cCat.push(c) } // list categories
-		if (cipherList[i].enabled && updDefCiph) { defaultCipherArray.push(cipherList[i].cipherName) } // update default ciphers
+		if (cCat.indexOf(c) == -1) {
+			if ( c !== "Extra" || (c == "Extra" && optShowExtraCiphers) ) cCat.push(c) // list categories (exclude Extra if not allowed)
+		}
+		if (cipherList[i].enabled && updDefCiph) defaultCipherArray.push(cipherList[i].cipherName) // update default ciphers
 	}
 	if (defaultCipherArraySaved.length == 0) defaultCipherArraySaved = [...defaultCipherArray] // copy of initial default ciphers
 	initColorArrays()
@@ -1069,9 +1107,11 @@ function enableAllCiphers() {
 	prevCiphIndex = -1 // reset cipher selection
 	var cur_chkbox
 	for (i = 0; i < cipherList.length; i++) {
-		cur_chkbox = document.getElementById("cipher_chkbox"+i)
-		cipherList[i].enabled = true
-		if (cur_chkbox !== null) cur_chkbox.checked = true
+		if ( cipherList[i].cipherCategory !== "Extra" || (cipherList[i].cipherCategory == "Extra" && optShowExtraCiphers) ) { // if category is not Extra or is Extra ciphers allowed
+			cur_chkbox = document.getElementById("cipher_chkbox"+i)
+			cipherList[i].enabled = true
+			if (cur_chkbox !== null) cur_chkbox.checked = true
+		}
 	}
 	updateTables() // update
 }
@@ -1080,7 +1120,11 @@ function enableAllEnglishCiphers() {
 	prevCiphIndex = -1 // reset cipher selection
 	var cur_chkbox
 	for (i = 0; i < cipherList.length; i++) {
-		if (cipherList[i].cArr.indexOf(97) > -1) { // lowercase "a"
+		if (cipherList[i].cipherCategory == "Extra" && optShowExtraCiphers && cipherList[i].cArr.indexOf(97) > -1) { // lowercase "a", "Extra" English ciphers only if allowed
+			cur_chkbox = document.getElementById("cipher_chkbox"+i)
+			cipherList[i].enabled = true
+			if (cur_chkbox !== null) cur_chkbox.checked = true
+		} else if (cipherList[i].cipherCategory !== "Extra" && cipherList[i].cArr.indexOf(97) > -1) { // lowercase "a", other cipher categories
 			cur_chkbox = document.getElementById("cipher_chkbox"+i)
 			cipherList[i].enabled = true
 			if (cur_chkbox !== null) cur_chkbox.checked = true
