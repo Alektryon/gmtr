@@ -703,14 +703,11 @@ body {
 	margin-left: 1.6em;
 }
 @media (max-width: 911px) { /* mobile */
-	.hCV {
-		height: 40px !important;
-	}
 	.hCV2 {
-		display: none; /* no vertical cipher labels */
+		display: inline-block;
 	}
 	td.hCV {
-		border-left: none !important; /* clean cipher label row */
+		border-left: inline-block !important;
 		min-width: 30px;
 	}
 }
