@@ -1125,6 +1125,16 @@ body {
 	font-family: var(--font-family);
 	border: 1px solid var(--border-dark-accent);
 }
+@media (max-width: 911px) { /* mobile */
+	.numPropTooltip {
+		top: 0 !important;
+		left: 0 !important;
+		bottom: 0;
+		right: 0;
+		margin: auto;
+		height: fit-content;
+	}
+}
 .contextMenuTooltip {
 	min-width: 100px;
 	margin: 1em;
